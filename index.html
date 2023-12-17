@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FA"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load static %}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fa" lang="fa" dir="rtl" >
+<head>
+    <title>اصلاح غلط املایی</title>
+    <style type="text/css">
+        body {
+            background: url("/static/images/3.jpg");
+            width: 1920px;
+            height: 1200px;
+        }
+        #t1 {
+            border-radius: 10px;
+            border: 1px solid black;
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+        #t1 {
+            padding-bottom: 25px;
+            padding-top: 25px;
+            border-radius: 50px;
+            position: fixed;
+            top: 80px;
+            right: 250px;
+            width: 800px;
+            height: 150px;
+        }
+        #tt {
+            color: white;
+            font-size: larger;
+            position: fixed;
+            top: 20px;
+            right: 550px;
+        }
+        #cli {
+            border: 1px solid black;
+            padding: 25px 10px;
+            border-radius: 25px;
+            position: fixed;
+            top: 300px;
+            right: 575px;
+            width: 150px;
+            font-size:20px;
+        }
+        #div1 {
+            border: 1px solid black;
+            padding: 25px 10px;
+            border-radius: 50px;
+            position: fixed;
+            top: 400px;
+            right: 250px;
+            width: 800px;
+            height: 150px;
+            background-color: aliceblue;
+        }
+    </style>
+</head>
+<body id="bood">
+    <form action="http://127.0.0.1:8000/secondpage/" method="get" id="fo1">
+        <h2 lang="fa" id="tt">عبارت غلط را وارد کنید</h2>
+        <label for="t1"></label><input type="text" name="input" id="t1" value="{{current_data}} "/>
+        <input type="submit" value="تبدیل" id="cli"/>
+    </form>
+    <div id="div1">
+        <div> {{process_data}} </div>
+        <div> {{process_data1}} </div>
+    </div>
+</body>
+</html>
