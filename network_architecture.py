@@ -33,9 +33,8 @@ import xlwt
 from xlwt import Workbook
 import pandas as pd
 from keras.callbacks import EarlyStopping
-#import fasttext
-#import visualkeras
-#import fasttext
+# import fasttext
+# import visualkeras
 from sklearn.manifold import TSNE
 import random
 
@@ -116,44 +115,44 @@ print('English Max Length: %d' % (eng_length))
 ger_tokenizer = create_tokenizer(dataset[:, 1])
 ger_vocab_size = len(ger_tokenizer.word_index) + 1
 ger_length = max_length(dataset[:, 1])
-#print(ger_tokenizer.word_index)
-#print(ger_tokenizer.word_index)
+# print(ger_tokenizer.word_index)
+# print(ger_tokenizer.word_index)
 print('German Vocabulary Size: %d' % ger_vocab_size)
 print('German Max Length: %d' % (ger_length))
 # prepare training data
 trainX = encode_sequences(ger_tokenizer, ger_length, train[:, 1])
-trainY = encode_sequences( eng_tokenizer, eng_length, train[:, 0])
+trainY = encode_sequences(eng_tokenizer, eng_length, train[:, 0])
 trainY = encode_output(trainY, eng_vocab_size)
 # prepare validation data
 testX = encode_sequences(ger_tokenizer, ger_length, test[:, 1])
-testY = encode_sequences( eng_tokenizer, eng_length, test[:, 0])
+testY = encode_sequences(eng_tokenizer, eng_length, test[:, 0])
 testY = encode_output(testY, eng_vocab_size)
 print('finish stup')
 # embedding_matrix=pre_train_glove(ger_vocab_size,word_index)
 embedding_matrix = np.loadtxt('embedding_matrix.txt')
 # define model
-hi=[]
+hi = []
 wb = Workbook()
-www='/content/drive/MyDrive/'+'data.xlsx'
-writer1=pd.ExcelWriter(www)
+www = '/content/drive/MyDrive/' + 'data.xlsx'
+writer1 = pd.ExcelWriter(www)
 df1 = pd.DataFrame()
 df1.to_excel(writer1, sheet_name='x1')
 writer1.save()
 writer1.close()
-for i in range(1,2):
+for i in range(1, 2):
     writer = pd.ExcelWriter(www, engine='openpyxl', mode='a')
-    model = define_model(ger_vocab_size, eng_vocab_size, ger_length, eng_length,1000,embedding_matrix)
+    model = define_model(ger_vocab_size, eng_vocab_size, ger_length, eng_length, 1000, embedding_matrix)
     model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['acc'])
     # summarize defined model
     print(model.summary())
     # plot_model(model, to_file='model.png', show_shapes=True)
     # keras.utils.plot_model(model, "m1.png", show_shapes=True)
     # fit model
-    filename = '/content/drive/MyDrive/'+'model'+str(i)+'.h5'
+    filename = '/content/drive/MyDrive/' + 'model' + str(i) + '.h5'
     checkpoint = ModelCheckpoint(filename, monitor='acc', verbose=1, save_best_only=True, mode='max')
     es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=100)
-    history = model.fit(trainX,trainY, epochs=2000, batch_size=64,
-    validation_data = (testX, testY), callbacks=[checkpoint,es], verbose=2)
+    history = model.fit(trainX, trainY, epochs=2000, batch_size=64, validation_data=(testX, testY),
+                        callbacks=[checkpoint, es], verbose=2)
     # strcom = str(i)+'.txt'
     # sheet1 = wb.add_sheet(strcom)
     # w2 = open(strcom,'w', encoding='utf-8')
@@ -171,8 +170,8 @@ for i in range(1,2):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    str1 = 'accuracy'+str(i)+'.png'
-    str2 = 'loss'+str(i)+'.png'
+    str1 = 'accuracy' + str(i) + '.png'
+    str2 = 'loss' + str(i) + '.png'
     plt.savefig(str1)
     plt.show()
     plt.plot(history.history['loss'])

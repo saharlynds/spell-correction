@@ -1,6 +1,5 @@
 from pickle import load
 from numpy import array
-from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from keras.utils.vis_utils import plot_model
@@ -25,13 +24,12 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Flatten
 from keras.layers import Embedding
-from Capsule_Keras import *
+# from Capsule_Keras import *
 from fasttext import FastText
-#import fasttext
-#import visualkeras
+# import fasttext
+# import visualkeras
 import keras
 import numpy as np
-#import fasttext
 from sklearn.manifold import TSNE
 import random
 
@@ -93,7 +91,8 @@ def pre_train_glove(vocab_size, word_index):
 
 
 def pre_train_fasttext(words):
-    fastText_model_path = '/content/drive/MyDrive/FA.bin'
+    # fastText_model_path = '/content/drive/MyDrive/FA.bin'
+    fastText_model_path = 'datasets/cc.fa.300.bin'
     model = FastText.load_model(fastText_model_path)
     embedding_matrix = zeros((len(words) + 1, 300))
     for i in range(0, len(words) - 1):
