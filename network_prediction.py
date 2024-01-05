@@ -2,7 +2,6 @@ from pickle import load
 from numpy import argmax
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.models import load_model
 from nltk.translate.bleu_score import corpus_bleu
 from keras.models import load_model
 from Capsule_Keras import *

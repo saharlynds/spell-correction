@@ -138,4 +138,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# pycharm
 __pycharm__/
+.idea/
+
+# datasets
+datasets/
