@@ -143,4 +143,4 @@ __pycharm__/
 .idea/
 
 # datasets
-spell_corrction_ui/datasets/
+spell_corrction_ui/datasets/*
