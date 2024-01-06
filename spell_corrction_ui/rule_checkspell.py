@@ -7,20 +7,25 @@ from spell_corrction_ui.character_rules.repetition_charachter import rules_repet
 from spell_corrction_ui.character_rules.delete_character import rules_delete
 from spell_corrction_ui.character_rules.symphonious_character import rules_symphonious
 from spell_corrction_ui.character_rules.displacement_character import rules_displacement
+import os
 
 
 def rule_checkspell(words):
-    loc = "datasets/databasecorect.xlsx"
+    loc = os.path.join('spell_corrction_ui', 'datasets', 'databasecorect.txt')
     # To open Workbook
-    wb = xlrd.open_workbook(loc)
-    sheet = wb.sheet_by_index(0)
+    # wb = xlrd.open_workbook(loc)
+    # sheet = wb.sheet_by_index(0)
     sli = []
     normalizer = InformalNormalizer()
     lemmatizer = Lemmatizer()
     stemmer = Stemmer()
     set1 = []
-    for i in range(sheet.nrows):
-        set1.append(sheet.cell_value(i, 0))
+    with open(loc, "r") as file:
+        lines = file.readlines()
+        for line in lines:
+            set1.append(line)
+    # for i in range(sheet.nrows):
+    #     set1.append(sheet.cell_value(i, 0))
     # set1 = set(arr)
     for j1 in words:
         text_after1 = normalizer.normalized_word(j1)

@@ -55,7 +55,7 @@ ROOT_URLCONF = 'spell_corrction_ui.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["spell_corrction_ui/templates"],
+        'DIRS': [os.path.join(BASE_DIR, 'spell_corrction_ui', "templates"), "spell_corrction_ui/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
