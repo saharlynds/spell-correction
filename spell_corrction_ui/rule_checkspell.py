@@ -1,15 +1,12 @@
-from django.template import Template, Context
-from django.http import HttpResponse
-from django.core.management import execute_from_command_line
 from hazm import InformalNormalizer, Lemmatizer, Stemmer
 import xlrd
-from levenshtein import levenshtein
-from character_rules.key_transfer import rules_keytransfer
-from character_rules.insert_character import rules_insert_character
-from character_rules.repetition_charachter import rules_repetition_character
-from character_rules.delete_character import rules_delete
-from character_rules.symphonious_character import rules_symphonious
-from character_rules.displacement_character import rules_displacement
+from spell_corrction_ui.levenshtein import levenshtein
+from spell_corrction_ui.character_rules.key_transfer import rules_keytransfer
+from spell_corrction_ui.character_rules.insert_character import rules_insert_character
+from spell_corrction_ui.character_rules.repetition_charachter import rules_repetition_character
+from spell_corrction_ui.character_rules.delete_character import rules_delete
+from spell_corrction_ui.character_rules.symphonious_character import rules_symphonious
+from spell_corrction_ui.character_rules.displacement_character import rules_displacement
 
 
 def rule_checkspell(words):
@@ -102,43 +99,3 @@ def rule_checkspell(words):
             sli.append(sss)
     s1 = ' '.join(sli) + "\n"
     return s1
-
-
-def secondpage(request):
-    if 'input' in request.GET and request.GET['input']:
-        now = request.GET['input']  # datetime.datetime.now()
-        # from 1 to len()-2
-        a = now.split()
-        # Simple way of using templates from the filesystem.
-        # This is BAD because it doesn't account for missing files!
-        loc = r"C:\Users\saman\PycharmProjects\untitled\aslidatasiroos\WordsSpellCheck.xlsx"
-        # To open Workbook
-        wb = xlrd.open_workbook(loc)
-        sheet = wb.sheet_by_index(0)
-        word1 = []
-        for word in a:
-            jj = 0
-            for i in range(sheet.nrows):
-                if str(sheet.cell_value(i, 0)) == str(word):
-                    jj = 1
-                    word1.append(str(sheet.cell_value(i, 1)))
-                    break
-            if jj == 0:
-                word1.append(word)
-        joint_word1 = ' '.join(word1)
-        word2 = rule_checkspell(joint_word1.split())
-        # sentencAnn = ann_siroos(now)
-        fp = open('second.html', encoding='utf-8')
-        t = Template(fp.read())
-        fp.close()
-        # html = t.render(Context({'current_data': now, 'process_data': word2, 'process_data1': sentencAnn[0]}))
-        html = t.render(Context({'current_data': now, 'process_data': word2}))
-        return HttpResponse(html)
-    else:
-        # Simple way of using templates from the filesystem.
-        # This is BAD because it doesn't account for missing files!
-        fp = open('second.html', encoding='utf-8')
-        t = Template(fp.read())
-        fp.close()
-        html = t.render(Context({'process_data': ''}))
-        return HttpResponse(html)

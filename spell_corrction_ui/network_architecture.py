@@ -1,42 +1,22 @@
 from pickle import load
-from numpy import array
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-from keras.utils import to_categorical
-from keras.utils.vis_utils import plot_model
-from keras.models import Sequential
 from keras.layers import LSTM
 from keras.layers import Bidirectional
-from keras.layers import Dense
-from keras.layers import Embedding
 from keras.layers import RepeatVector
 from keras.layers import TimeDistributed
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Conv1D
-from keras.layers import MaxPooling1D
-from keras.layers import GlobalMaxPooling1D
 from matplotlib import pyplot as plt
-from keras.layers import Dropout
 from numpy import array
-from numpy import asarray
-from numpy import zeros
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.layers import Flatten
 from keras.layers import Embedding
-from keras.layers import BatchNormalization
-from Capsule_Keras import *
 import numpy as np
-import xlwt
 from xlwt import Workbook
 import pandas as pd
 from keras.callbacks import EarlyStopping
 # import fasttext
 # import visualkeras
-from sklearn.manifold import TSNE
-import random
 
 
 # load a clean dataset
