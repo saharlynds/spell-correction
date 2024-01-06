@@ -37,7 +37,7 @@ def secondpage(request):
     else:
         # Simple way of using templates from the filesystem.
         # This is BAD because it doesn't account for missing files!
-        fp = open('second.html', encoding='utf-8')
+        fp = open('spell_corrction_ui/templates/second.html', encoding='utf-8')
         t = Template(fp.read())
         fp.close()
         html = t.render(Context({'process_data': ''}))
