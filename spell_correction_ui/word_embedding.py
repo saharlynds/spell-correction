@@ -2,7 +2,7 @@ from pickle import load
 from numpy import array
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
-from keras.utils.vis_utils import plot_model
+from keras.utils import plot_model
 from keras.models import Sequential
 from keras.layers import LSTM
 from keras.layers import Bidirectional
@@ -32,6 +32,34 @@ import keras
 import numpy as np
 from sklearn.manifold import TSNE
 import random
+import os
+
+# Every data file and model artifact lives in spell_correction_ui/datasets/,
+# which is gitignored - nothing under it is committed. Paths resolve relative to
+# this file, so the script runs from any working directory. See the README for
+# how to produce each input.
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')
+
+# Input: the cleaned corpus from neural_network.py.
+BOTH_PKL = os.path.join(DATA_DIR, 'english-german-both.pkl')
+
+# Input: pretrained Persian fastText vectors, 300-d.
+# Download cc.fa.300.bin from https://fasttext.cc/docs/en/crawl-vectors.html
+FASTTEXT_MODEL = os.path.join(DATA_DIR, 'cc.fa.300.bin')
+
+# Optional, used only by the unused pre_train_glove() helper below.
+GLOVE_FILE = os.path.join(DATA_DIR, 'glove.6B.100d.txt')
+
+# Output: the embedding matrix consumed by network_architecture.py.
+EMBEDDING_MATRIX = os.path.join(DATA_DIR, 'embedding_matrix.txt')
+
+for _path, _made_by in ((BOTH_PKL, 'neural_network.py'),
+                        (FASTTEXT_MODEL, 'downloading cc.fa.300.bin from fasttext.cc')):
+    if not os.path.exists(_path):
+        raise SystemExit(
+            'Missing required file: ' + _path +
+            ' -- produce it with ' + _made_by + ' (see the README).'
+        )
 
 
 # load a clean dataset
@@ -73,7 +101,7 @@ def encode_output(sequences, vocab_size):
 
 def pre_train_glove(vocab_size, word_index):
     embeddings_index = dict()
-    f = open('../glove_data/glove.6B/glove.6B.100d.txt')
+    f = open(GLOVE_FILE, encoding='utf-8')
     for line in f:
         values = line.split()
         word = values[0]
@@ -91,8 +119,7 @@ def pre_train_glove(vocab_size, word_index):
 
 
 def pre_train_fasttext(words):
-    # fastText_model_path = '/content/drive/MyDrive/FA.bin'
-    fastText_model_path = 'datasets/cc.fa.300.bin'
+    fastText_model_path = FASTTEXT_MODEL
     model = FastText.load_model(fastText_model_path)
     embedding_matrix = zeros((len(words) + 1, 300))
     for i in range(0, len(words) - 1):
@@ -117,7 +144,7 @@ def define_model(src_vocab, tar_vocab, src_timesteps, tar_timesteps, n_units, em
 
 
 # load datasets
-dataset = load_clean_sentences('english-german-both.pkl')
+dataset = load_clean_sentences(BOTH_PKL)
 # prepare english tokenizer
 eng_tokenizer = create_tokenizer(dataset[:, 0])
 # print(eng_tokenizer.word_index.keys())
@@ -138,4 +165,4 @@ for key in ger_tokenizer.word_index:
 print('German Vocabulary Size: %d' % ger_vocab_size)
 print('German Max Length: %d' % ger_length)
 embedding_matrix = pre_train_fasttext(wordFastTet)
-np.savetxt("embedding_matrix.txt", embedding_matrix)
+np.savetxt(EMBEDDING_MATRIX, embedding_matrix)

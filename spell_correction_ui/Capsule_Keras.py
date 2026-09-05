@@ -3,7 +3,7 @@
 
 from keras import activations
 from keras import backend
-from keras.engine.topology import Layer
+from keras.layers import Layer
 import tensorflow as tf
 
 

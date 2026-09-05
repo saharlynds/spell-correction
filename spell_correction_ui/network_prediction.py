@@ -3,7 +3,54 @@ from numpy import argmax
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import load_model
+import os
+import sys
+
+# Run directly (python spell_correction_ui/network_prediction.py) or as a
+# module. Direct execution puts this file's own directory on sys.path, not the
+# repo root, so the spell_correction_ui.* import below needs this first.
+if __package__ in (None, ''):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from spell_correction_ui.Capsule_Keras import *
+
+# Every data file and model artifact lives in spell_correction_ui/datasets/,
+# which is gitignored - nothing under it is committed. Paths resolve relative to
+# this file, so the script runs from any working directory. See the README for
+# how to produce each input.
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')
+
+# Inputs from neural_network.py.
+BOTH_PKL = os.path.join(DATA_DIR, 'english-german-both.pkl')
+TRAIN_PKL = os.path.join(DATA_DIR, 'english-german-train.pkl')
+TEST_PKL = os.path.join(DATA_DIR, 'english-german-test.pkl')
+VALID_PKL = os.path.join(DATA_DIR, 'valid.pkl')
+
+# The trained weights from network_architecture.py. Point this at the checkpoint
+# you want to evaluate.
+MODEL_FILE = os.path.join(DATA_DIR, 'bi1000.h5')
+
+# Optional extra validation input, one sentence per line. Left unset by default;
+# fill in a path to evaluate it via the evaluate_model call at the bottom.
+VALIDATION_FILE = os.path.join(DATA_DIR, 'informalAnn.txt')
+
+# Outputs, written side by side and line-aligned: the model predictions, the
+# erroneous source sentences, and the gold targets. These are the three files
+# obtaining_evaluation_quantities__test.py reads.
+PREDICTED_OUT = os.path.join(DATA_DIR, 'formann.txt')
+SOURCE_OUT = os.path.join(DATA_DIR, 'inform1.txt')
+GOLD_OUT = os.path.join(DATA_DIR, 'formtrue.txt')
+
+for _path, _made_by in ((BOTH_PKL, 'neural_network.py'),
+                        (TRAIN_PKL, 'neural_network.py'),
+                        (TEST_PKL, 'neural_network.py'),
+                        (VALID_PKL, 'neural_network.py'),
+                        (MODEL_FILE, 'network_architecture.py')):
+    if not os.path.exists(_path):
+        raise SystemExit(
+            'Missing required file: ' + _path +
+            ' -- produce it with ' + _made_by + ' (see the README).'
+        )
 
 
 # load a clean dataset
@@ -56,9 +103,9 @@ def predict_sequence(model, tokenizer, source):
 
 # evaluate the skill of the model
 def evaluate_model(model, tokenizer, sources, raw_dataset):
-    w1 = open("/content/drive/MyDrive/formann.txt","w", encoding='utf-8')
-    w2 = open("/content/drive/MyDrive/inform1.txt","w", encoding='utf-8')
-    w3 = open("/content/drive/MyDrive/formtrue.txt","w", encoding='utf-8')
+    w1 = open(PREDICTED_OUT, 'w', encoding='utf-8')
+    w2 = open(SOURCE_OUT, 'w', encoding='utf-8')
+    w3 = open(GOLD_OUT, 'w', encoding='utf-8')
     actual, predicted = list(), list()
     for i, source in enumerate(sources):
         # translate encoded source text
@@ -100,10 +147,10 @@ def evaluate_model1(model, tokenizer, sources, raw_dataset):
 
 
 # load datasets
-dataset = load_clean_sentences('english-german-both.pkl')
-train = load_clean_sentences('english-german-train.pkl')
-test = load_clean_sentences('english-german-test.pkl')
-vtest = load_clean_sentences('valid.pkl')
+dataset = load_clean_sentences(BOTH_PKL)
+train = load_clean_sentences(TRAIN_PKL)
+test = load_clean_sentences(TEST_PKL)
+vtest = load_clean_sentences(VALID_PKL)
 # prepare english tokenizer
 eng_tokenizer = create_tokenizer(dataset[:, 0])
 eng_vocab_size = len(eng_tokenizer.word_index) + 1
@@ -123,14 +170,14 @@ a.append("حملح بدح ادامح")
 x1 = encode_sequences(ger_tokenizer, ger_length, a)
 
 # load model
-r1 = open("/content/drive/MyDrive/informalAnn.txt", encoding='utf-8')
+r1 = open(VALIDATION_FILE, encoding='utf-8')
 f1 = r1.readlines()
 validation = list()
 for k in f1:
     validation.append(k)
 r1.close()
 validationx = encode_sequences(ger_tokenizer, ger_length, validation)
-modeltrain = '/content/drive/MyDrive/bi1000.h5'
+modeltrain = MODEL_FILE
 model = load_model(modeltrain, custom_objects={'Capsule': Capsule})
 # model = load_model('model.h5')
 # test on some training sequences

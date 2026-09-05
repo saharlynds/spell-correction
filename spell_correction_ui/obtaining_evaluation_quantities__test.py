@@ -2,9 +2,31 @@ from nltk.translate.bleu_score import corpus_bleu
 import numpy as np
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
-r1 = open("C:\\Users\\saman\\PycharmProjects\\untitled\\informalAnn.txt", encoding='utf-8')
-r2 = open("C:\\Users\\saman\\PycharmProjects\\untitled\\formalAnn2.txt", encoding='utf-8')
-r3 = open("C:\\Users\\saman\\PycharmProjects\\untitled\\formaltrue.txt", encoding='utf-8')
+
+# Fill in the paths to your own evaluation output files from Step 6
+# (network_prediction.py). Each is one sentence per line, and all three must be
+# line-aligned: line N of every file must describe the same sentence.
+PREDICTED_FILE = ""   # model's predicted corrections (e.g. formann.txt)
+SOURCE_FILE = ""      # the erroneous input sentences (e.g. inform1.txt)
+GOLD_FILE = ""        # the correct/gold sentences (e.g. formtrue.txt)
+
+_unset = [name for name, path in (('PREDICTED_FILE', PREDICTED_FILE),
+                                  ('SOURCE_FILE', SOURCE_FILE),
+                                  ('GOLD_FILE', GOLD_FILE)) if not path]
+if _unset:
+    raise SystemExit(
+        'Set PREDICTED_FILE/SOURCE_FILE/GOLD_FILE at the top of this script '
+        'before running. Still empty: ' + ', '.join(_unset)
+    )
+
+# Keep these assignments in this order. Downstream the three handles are used by
+# role, not by name: f3 (gold) is the BLEU reference, f2 (predicted) is the BLEU
+# hypothesis, and f1 (source) only answers "was this token already correct?" in
+# the tp/tn/fp/fn block. Swapping the source and predicted files silently
+# inverts tp with fn and scores BLEU against the input instead of the output.
+r1 = open(SOURCE_FILE, encoding='utf-8')
+r2 = open(PREDICTED_FILE, encoding='utf-8')
+r3 = open(GOLD_FILE, encoding='utf-8')
 f1 = r1.readlines()
 f2 = r2.readlines()
 f3 = r3.readlines()

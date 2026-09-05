@@ -20,10 +20,16 @@ def rule_checkspell(words):
     lemmatizer = Lemmatizer()
     stemmer = Stemmer()
     set1 = []
-    with open(loc, "r") as file:
-        lines = file.readlines()
-        for line in lines:
-            set1.append(line)
+    # encoding is explicit because the dictionary is UTF-8 Persian; without it
+    # Windows decodes the file as cp1252 and mangles every entry.
+    with open(loc, "r", encoding="utf-8") as file:
+        for line in file:
+            # Strip the trailing newline. Keeping it makes every membership test
+            # below compare a bare word against "word\n", so nothing ever
+            # matches and no correction is ever accepted.
+            word = line.strip()
+            if word:
+                set1.append(word)
     # for i in range(sheet.nrows):
     #     set1.append(sheet.cell_value(i, 0))
     # set1 = set(arr)

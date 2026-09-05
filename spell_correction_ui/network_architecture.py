@@ -15,6 +15,33 @@ import numpy as np
 from xlwt import Workbook
 import pandas as pd
 from keras.callbacks import EarlyStopping
+import os
+
+# Every data file and model artifact lives in spell_correction_ui/datasets/,
+# which is gitignored - nothing under it is committed. Paths resolve relative to
+# this file, so the script runs from any working directory. See the README for
+# how to produce each input.
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')
+
+# Inputs from neural_network.py and word_embedding.py.
+BOTH_PKL = os.path.join(DATA_DIR, 'english-german-both.pkl')
+TRAIN_PKL = os.path.join(DATA_DIR, 'english-german-train.pkl')
+TEST_PKL = os.path.join(DATA_DIR, 'english-german-test.pkl')
+EMBEDDING_MATRIX = os.path.join(DATA_DIR, 'embedding_matrix.txt')
+
+# Outputs: per-run training history and the model checkpoint.
+HISTORY_XLSX = os.path.join(DATA_DIR, 'data.xlsx')
+MODEL_TEMPLATE = os.path.join(DATA_DIR, 'model{}.h5')
+
+for _path, _made_by in ((BOTH_PKL, 'neural_network.py'),
+                        (TRAIN_PKL, 'neural_network.py'),
+                        (TEST_PKL, 'neural_network.py'),
+                        (EMBEDDING_MATRIX, 'word_embedding.py')):
+    if not os.path.exists(_path):
+        raise SystemExit(
+            'Missing required file: ' + _path +
+            ' -- produce it with ' + _made_by + ' (see the README).'
+        )
 # import fasttext
 # import visualkeras
 
@@ -80,9 +107,9 @@ def define_model(src_vocab, tar_vocab, src_timesteps, tar_timesteps, n_units, em
 
 
 # load datasets
-dataset = load_clean_sentences('english-german-both.pkl')
-train = load_clean_sentences('english-german-train.pkl')
-test = load_clean_sentences('english-german-test.pkl')
+dataset = load_clean_sentences(BOTH_PKL)
+train = load_clean_sentences(TRAIN_PKL)
+test = load_clean_sentences(TEST_PKL)
 # prepare english tokenizer
 eng_tokenizer = create_tokenizer(dataset[:, 0])
 # print(eng_tokenizer.word_index.keys())
@@ -109,11 +136,11 @@ testY = encode_sequences(eng_tokenizer, eng_length, test[:, 0])
 testY = encode_output(testY, eng_vocab_size)
 print('finish stup')
 # embedding_matrix=pre_train_glove(ger_vocab_size,word_index)
-embedding_matrix = np.loadtxt('embedding_matrix.txt')
+embedding_matrix = np.loadtxt(EMBEDDING_MATRIX)
 # define model
 hi = []
 wb = Workbook()
-www = '/content/drive/MyDrive/' + 'data.xlsx'
+www = HISTORY_XLSX
 writer1 = pd.ExcelWriter(www)
 df1 = pd.DataFrame()
 df1.to_excel(writer1, sheet_name='x1')
@@ -128,7 +155,7 @@ for i in range(1, 2):
     # plot_model(model, to_file='model.png', show_shapes=True)
     # keras.utils.plot_model(model, "m1.png", show_shapes=True)
     # fit model
-    filename = '/content/drive/MyDrive/' + 'model' + str(i) + '.h5'
+    filename = MODEL_TEMPLATE.format(i)
     checkpoint = ModelCheckpoint(filename, monitor='acc', verbose=1, save_best_only=True, mode='max')
     es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=100)
     history = model.fit(trainX, trainY, epochs=2000, batch_size=64, validation_data=(testX, testY),

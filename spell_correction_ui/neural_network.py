@@ -1,4 +1,4 @@
-from google.colab import drive
+import os
 import string
 import re
 from pickle import dump
@@ -6,7 +6,29 @@ from unicodedata import normalize
 from numpy import array
 from hazm import *
 
-drive.mount('/content/drive')
+# Every data file lives in spell_correction_ui/datasets/, which is gitignored -
+# nothing under it is committed. Paths resolve relative to this file, so the
+# script runs from any working directory. See the README for how to produce each
+# input.
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')
+
+# Input: the synthetic parallel corpus, one pair per line, correct<TAB>erroneous.
+# Produce it with generate_error_pairs.py.
+PAIRS_FILE = os.path.join(DATA_DIR, 'pairs.txt')
+
+# Outputs: the cleaned corpus and its train/test/valid splits.
+CLEAN_PKL = os.path.join(DATA_DIR, 'english-german.pkl')
+BOTH_PKL = os.path.join(DATA_DIR, 'english-german-both.pkl')
+TRAIN_PKL = os.path.join(DATA_DIR, 'english-german-train.pkl')
+TEST_PKL = os.path.join(DATA_DIR, 'english-german-test.pkl')
+VALID_PKL = os.path.join(DATA_DIR, 'valid.pkl')
+
+if not os.path.exists(PAIRS_FILE):
+    raise SystemExit(
+        'Missing input corpus: ' + PAIRS_FILE + '\n'
+        'Generate it with generate_error_pairs.py - see the README.'
+    )
+os.makedirs(DATA_DIR, exist_ok=True)
 
 
 # load doc into memory
@@ -77,7 +99,7 @@ def save_clean_data(sentences, filename):
 
 
 # load dataset
-filename = '/content/drive/MyDrive/pairsiroos.txt'
+filename = PAIRS_FILE
 doc = load_doc(filename)
 # split into english-german pairs
 pairs = to_pairs(doc)
@@ -85,7 +107,7 @@ pairs = to_pairs(doc)
 # clean sentences
 clean_pairs = clean_pairs1(pairs)
 # save clean pairs to file
-save_clean_data(clean_pairs, 'english-german.pkl')
+save_clean_data(clean_pairs, CLEAN_PKL)
 # spot check
 for i in range(100):
     print('[%s] => [%s]' % (clean_pairs[i, 0], clean_pairs[i, 1]))
@@ -109,7 +131,7 @@ def save_clean_data(sentences, filename):
 
 
 # load dataset
-raw_dataset = load_clean_sentences('english-german.pkl')
+raw_dataset = load_clean_sentences(CLEAN_PKL)
 # reduce dataset size
 n_sentences = 1000000
 dataset = raw_dataset[:n_sentences, :]
@@ -120,7 +142,7 @@ train, test = dataset[:800000], dataset[800000:1000000]
 valid = raw_dataset[1000000:1190000, :]
 
 # save
-save_clean_data(dataset, 'english-german-both.pkl')
-save_clean_data(train, 'english-german-train.pkl')
-save_clean_data(test, 'english-german-test.pkl')
-save_clean_data(valid, 'valid.pkl')
+save_clean_data(dataset, BOTH_PKL)
+save_clean_data(train, TRAIN_PKL)
+save_clean_data(test, TEST_PKL)
+save_clean_data(valid, VALID_PKL)
