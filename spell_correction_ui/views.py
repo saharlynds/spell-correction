@@ -29,7 +29,7 @@ def secondpage(request):
         joint_word1 = ' '.join(word1)
         word2 = rule_checkspell.rule_checkspell(joint_word1.split())
         # sentencAnn = ann_siroos(now)
-        fp = open(os.path.join('spell_corrction_ui', 'templates', 'second.html'), encoding='utf-8')
+        fp = open(os.path.join('spell_correction_ui', 'templates', 'second.html'), encoding='utf-8')
         t = Template(fp.read())
         fp.close()
         # html = t.render(Context({'current_data': now, 'process_data': word2, 'process_data1': sentencAnn[0]}))
@@ -38,8 +38,8 @@ def secondpage(request):
     else:
         # Simple way of using templates from the filesystem.
         # This is BAD because it doesn't account for missing files!
-        # fp = open('spell_corrction_ui/templates/second.html', encoding='utf-8')
-        fp = open(os.path.join('spell_corrction_ui', 'templates', 'second.html'), encoding='utf-8')
+        # fp = open('spell_correction_ui/templates/second.html', encoding='utf-8')
+        fp = open(os.path.join('spell_correction_ui', 'templates', 'second.html'), encoding='utf-8')
         t = Template(fp.read())
         fp.close()
         html = t.render(Context({'process_data': ''}))

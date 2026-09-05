@@ -1,17 +1,17 @@
 from hazm import InformalNormalizer, Lemmatizer, Stemmer
 import xlrd
-from spell_corrction_ui.levenshtein import levenshtein
-from spell_corrction_ui.character_rules.key_transfer import rules_keytransfer
-from spell_corrction_ui.character_rules.insert_character import rules_insert_character
-from spell_corrction_ui.character_rules.repetition_charachter import rules_repetition_character
-from spell_corrction_ui.character_rules.delete_character import rules_delete
-from spell_corrction_ui.character_rules.symphonious_character import rules_symphonious
-from spell_corrction_ui.character_rules.displacement_character import rules_displacement
+from spell_correction_ui.levenshtein import levenshtein
+from spell_correction_ui.character_rules.key_transfer import rules_keytransfer
+from spell_correction_ui.character_rules.insert_character import rules_insert_character
+from spell_correction_ui.character_rules.repetition_charachter import rules_repetition_character
+from spell_correction_ui.character_rules.delete_character import rules_delete
+from spell_correction_ui.character_rules.symphonious_character import rules_symphonious
+from spell_correction_ui.character_rules.displacement_character import rules_displacement
 import os
 
 
 def rule_checkspell(words):
-    loc = os.path.join('spell_corrction_ui', 'datasets', 'databasecorect.txt')
+    loc = os.path.join('spell_correction_ui', 'datasets', 'databasecorect.txt')
     # To open Workbook
     # wb = xlrd.open_workbook(loc)
     # sheet = wb.sheet_by_index(0)

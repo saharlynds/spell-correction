@@ -1,5 +1,5 @@
 """
-ASGI config for spell_corrction_ui project.
+ASGI config for spell_correction_ui project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spell_corrction_ui.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spell_correction_ui.settings')
 
 application = get_asgi_application()

@@ -3,7 +3,7 @@ from numpy import argmax
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import load_model
-from spell_corrction_ui.Capsule_Keras import *
+from spell_correction_ui.Capsule_Keras import *
 
 
 # load a clean dataset

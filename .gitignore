@@ -59,7 +59,7 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-spell_corrction_ui/db.sqlite3
+db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
@@ -142,5 +142,14 @@ cython_debug/
 __pycharm__/
 .idea/
 
-# datasets
-spell_corrction_ui/datasets/*
+# datasets (regenerate locally - see README)
+spell_correction_ui/datasets/*
+*.pkl
+embedding_matrix.txt
+
+# trained model weights / embeddings (too large to commit - see README)
+*.h5
+*.keras
+*.hdf5
+*.ckpt
+*.bin
